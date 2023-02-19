@@ -5,6 +5,9 @@ import customtkinter
 
 import tkinter
 import secrets
+import re
+
+import tkinter as tk
 from plyer import notification
 from google.cloud import firestore
 
@@ -23,6 +26,12 @@ db = firestore.client()
 app = customtkinter.CTk()
 
 
+def VerifiEmail(email):
+    pattern = r'^\S+@\S+\.\S+$'
+    if re.match(pattern, email):
+        return False
+    else:
+        return True
 def VerifiUser(nomeUser):
     alreadyUserNameUsed = False
     users_ref = db.collection(u"User")
@@ -42,7 +51,7 @@ def VerifiUser(nomeUser):
 
 # Criar nove key
 def ADDNewKey():
-    key = secrets.token_hex(64)
+    key = secrets.token_hex(70)
     now = datetime.now()
     dia = now.strftime('%d-%m-%Y')
 
@@ -129,6 +138,9 @@ def VerifiInput(nomeUser, passUser, email, key):
     if nomeUser == "" or passUser == "" or email == "" or key == "":
         messagebox.showerror(title='Error', message='Preencha todos os campos para prosseguir')
         return False
+    if VerifiEmail(email):
+        messagebox.showerror(title='Error', message='Email não e valido')
+        return False
     else:
         return True
 
@@ -159,6 +171,8 @@ def AddNewAccout(email, nomeUser, passUser, key):
             })
             ReadKeyUse(key)
             messagebox.showinfo(title='success', message='Conta criada com sucesso')
+
+
 
 
 # pagina de registro
@@ -200,9 +214,14 @@ def LayoutLogin():
 
     app.geometry("600x400")
     app.title('Login')
+    #app.wm_overrideredirect(True)
+    app.iconbitmap('C:/Users/JoaoP/Downloads/Arvore.ico')
+    app.resizable(False, False)
+   # app.attributes('-toolwindow', True)
 
     frame = customtkinter.CTkFrame(app, width=320, height=360, corner_radius=15)
     frame.place(relx=0.5, rely=0.5, anchor=tkinter.CENTER)
+
 
     l1 = customtkinter.CTkLabel(master=frame, text="Login", font=('Century Gothic', 20))
     l1.place(x=138, y=45)
@@ -220,4 +239,38 @@ def LayoutLogin():
     app.mainloop()
 
 
+
+
+
+
 LayoutLogin()
+
+# app.bind("<ButtonPress-1>", on_drag_start)
+# app.bind("<B1-Motion>", on_drag_motion)
+# app.bind("<FocusOut>", on_focus_out)
+# barra_titulo = tkinter.Frame(app, bg="#2b2b2b", height=30)
+# barra_titulo.pack(side="top", fill="x")
+# barra_titulo.configure(takefocus=False)
+#
+# # Adiciona um texto à barra de título
+# titulo = tkinter.Label(barra_titulo, text="Minha janela personalizada", fg="white", bg="#2b2b2b")
+# titulo.pack(side="left", padx=5)
+#
+# # Adiciona um botão de fechar à barra de título
+# botao_fechar = tkinter.Button(barra_titulo, text="X", command=fechar_janela, bg="#2b2b2b", fg="white", bd=0)
+# botao_fechar.pack(side="right", padx=5)
+#
+# def fechar_janela():
+#     app.destroy()
+# def on_drag_start(event):
+#     app._drag_start_x = event.x
+#     app._drag_start_y = event.y
+#
+#
+# def on_drag_motion(event):
+#     x = app.winfo_x() + (event.x - app._drag_start_x)
+#     y = app.winfo_y() + (event.y - app._drag_start_y)
+#     app.geometry("+{x}+{y}".format(x=x, y=y))
+#
+# def on_focus_out(event):
+#     app.withdraw()
