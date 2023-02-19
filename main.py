@@ -1,3 +1,5 @@
+import adicionarNovaConta
+import loginCliente
 import datetime
 from tkinter import messagebox
 
@@ -18,12 +20,13 @@ from firebase_admin import firestore
 from datetime import datetime
 from datetime import date
 
-cred = credentials.Certificate(r"C:\Users\JoaoP\Downloads\gerador-pass-firebase-adminsdk-jq5tz-e946967ec9.json")
+#cred = credentials.Certificate(r"C:\Users\JoaoP\Downloads\gerador-pass-firebase-adminsdk-jq5tz-e946967ec9.json")
 
-appFirebase = firebase_admin.initialize_app(cred)
+#appFirebase = firebase_admin.initialize_app(cred)
 
-db = firestore.client()
+#db = firestore.client()
 app = customtkinter.CTk()
+
 
 
 def VerifiEmail(email):
@@ -32,145 +35,145 @@ def VerifiEmail(email):
         return False
     else:
         return True
-def VerifiUser(nomeUser):
-    alreadyUserNameUsed = False
-    users_ref = db.collection(u"User")
-    docs = users_ref.stream()
-
-    for doc in docs:
-        nomeUserFireBase = doc.to_dict()['NameUser']
-        if nomeUser == nomeUserFireBase:
-            alreadyUserNameUsed = True
-            break
-
-    if alreadyUserNameUsed:
-        return True
-    else:
-        return False
+# def VerifiUser(nomeUser):
+#     alreadyUserNameUsed = False
+#     users_ref = db.collection(u"User")
+#     docs = users_ref.stream()
+#
+#     for doc in docs:
+#         nomeUserFireBase = doc.to_dict()['NameUser']
+#         if nomeUser == nomeUserFireBase:
+#             alreadyUserNameUsed = True
+#             break
+#
+#     if alreadyUserNameUsed:
+#         return True
+#     else:
+#         return False
 
 
 # Criar nove key
-def ADDNewKey():
-    key = secrets.token_hex(70)
-    now = datetime.now()
-    dia = now.strftime('%d-%m-%Y')
-
-    doc_ref = db.collection(u'Keys').document()
-    doc_ref.set({
-        u'Key': key,
-        u'Day': dia,
-        u'DayFinish': "12-02-3023",  # isto tem que ser mudado tem que ser feito uma verificacao antes
-        u'Duracao': u'lifetime',
-        u'Usada': False
-    })
+# def ADDNewKey():
+#     key = secrets.token_hex(70)
+#     now = datetime.now()
+#     dia = now.strftime('%d-%m-%Y')
+#
+#     doc_ref = db.collection(u'Keys').document()
+#     doc_ref.set({
+#         u'Key': key,
+#         u'Day': dia,
+#         u'DayFinish': "12-02-3023",  # isto tem que ser mudado tem que ser feito uma verificacao antes
+#         u'Duracao': u'lifetime',
+#         u'Usada': False
+#     })
 
 
 # Trazer dados especificos da key
-def VerifiInformationDay(dayFinish, key):
-    users_ref = db.collection(u"Keys")
-    docs = users_ref.stream()
-    for doc in docs:
-        keyFireBase = doc.to_dict()['Key']
-        if key == keyFireBase:
-            dayFinish = doc.to_dict()['DayFinish']
-            teste = datetime.strptime(dayFinish, "%d-%m-%Y").date()
-            return teste
+# def VerifiInformationDay(dayFinish, key):
+#     users_ref = db.collection(u"Keys")
+#     docs = users_ref.stream()
+#     for doc in docs:
+#         keyFireBase = doc.to_dict()['Key']
+#         if key == keyFireBase:
+#             dayFinish = doc.to_dict()['DayFinish']
+#             teste = datetime.strptime(dayFinish, "%d-%m-%Y").date()
+#             return teste
+#
+#
+# def VerifiInformationUse(key):
+#     users_ref = db.collection(u"Keys")
+#     docs = users_ref.stream()
+#     for doc in docs:
+#         keyFireBase = doc.to_dict()['Key']
+#         if key == keyFireBase:
+#             use = doc.to_dict()['Usada']
+#             return use
+#
+#
+# def VerifiInformationKey(key):
+#     notExist = False
+#     users_ref = db.collection(u"Keys")
+#     docs = users_ref.stream()
+#     for doc in docs:
+#         keyFireBase = doc.to_dict()['Key']
+#         if keyFireBase == key:
+#             # se entrar aqui e porque existe
+#             notExist = False
+#             break
+#         else:
+#             # se entrar aqui e pq nao e igual
+#             notExist = True
+#
+#     if notExist:
+#         return True
+#     else:
+#         return False
+#
+#
+# def VerifiKey(key,nomeUser):
+#     dayFinish = ""
+#     users_ref = db.collection(u"Keys")
+#     docs = users_ref.stream()
+#     now = datetime.now()
+#     day = now.date()
+#     ####Contar documentos####
+#     collection_ref = db.collection(u'Keys')
+#     docss = collection_ref.get()
+#     num_docs = len(docss)
+#     for doc in docs:
+#         if VerifiInformationKey(key):
+#             messagebox.showerror(title='error', message='Key não existe')
+#             return False
+#         elif day > VerifiInformationDay(dayFinish, key):
+#             messagebox.showerror(title='error', message='Key expirada')
+#             return False
+#         elif VerifiInformationUse(key):
+#             messagebox.showerror(title='error', message='Key ja utilizada')
+#             return False
+#         elif VerifiUser(nomeUser):
+#             messagebox.showerror(title='error', message='Nome utilizador ja usado')
+#             return False
+#         else:
+#             return True
 
 
-def VerifiInformationUse(key):
-    users_ref = db.collection(u"Keys")
-    docs = users_ref.stream()
-    for doc in docs:
-        keyFireBase = doc.to_dict()['Key']
-        if key == keyFireBase:
-            use = doc.to_dict()['Usada']
-            return use
+# def VerifiInput(nomeUser, passUser, email, key):
+#     if nomeUser == "" or passUser == "" or email == "" or key == "":
+#         messagebox.showerror(title='Error', message='Preencha todos os campos para prosseguir')
+#         return False
+#     if VerifiEmail(email):
+#         messagebox.showerror(title='Error', message='Email não e valido')
+#         return False
+#     else:
+#         return True
 
 
-def VerifiInformationKey(key):
-    notExist = False
-    users_ref = db.collection(u"Keys")
-    docs = users_ref.stream()
-    for doc in docs:
-        keyFireBase = doc.to_dict()['Key']
-        if keyFireBase == key:
-            # se entrar aqui e porque existe
-            notExist = False
-            break
-        else:
-            # se entrar aqui e pq nao e igual
-            notExist = True
-
-    if notExist:
-        return True
-    else:
-        return False
-
-
-def VerifiKey(key,nomeUser):
-    dayFinish = ""
-    users_ref = db.collection(u"Keys")
-    docs = users_ref.stream()
-    now = datetime.now()
-    day = now.date()
-    ####Contar documentos####
-    collection_ref = db.collection(u'Keys')
-    docss = collection_ref.get()
-    num_docs = len(docss)
-    for doc in docs:
-        if VerifiInformationKey(key):
-            messagebox.showerror(title='error', message='Key não existe')
-            return False
-        elif day > VerifiInformationDay(dayFinish, key):
-            messagebox.showerror(title='error', message='Key expirada')
-            return False
-        elif VerifiInformationUse(key):
-            messagebox.showerror(title='error', message='Key ja utilizada')
-            return False
-        elif VerifiUser(nomeUser):
-            messagebox.showerror(title='error', message='Nome utilizador ja usado')
-            return False
-        else:
-            return True
-
-
-def VerifiInput(nomeUser, passUser, email, key):
-    if nomeUser == "" or passUser == "" or email == "" or key == "":
-        messagebox.showerror(title='Error', message='Preencha todos os campos para prosseguir')
-        return False
-    if VerifiEmail(email):
-        messagebox.showerror(title='Error', message='Email não e valido')
-        return False
-    else:
-        return True
-
-
-def ReadKeyUse(key):
-    users_ref = db.collection(u"Keys")
-    docs = users_ref.stream()
-    for doc in docs:
-        keyFireBase = doc.to_dict()['Key']
-        if key == keyFireBase:
-            id = doc.id
-            city_ref = users_ref.document(id)
-
-            # Set the capital field
-            city_ref.update({u'Usada': True})
+# def ReadKeyUse(key):
+#     users_ref = db.collection(u"Keys")
+#     docs = users_ref.stream()
+#     for doc in docs:
+#         keyFireBase = doc.to_dict()['Key']
+#         if key == keyFireBase:
+#             id = doc.id
+#             city_ref = users_ref.document(id)
+#
+#             # Set the capital field
+#             city_ref.update({u'Usada': True})
 
 
 # Criar novo Usuario
-def AddNewAccout(email, nomeUser, passUser, key):
-    if VerifiInput(nomeUser, passUser, email, key):
-        if VerifiKey(key,nomeUser):
-            doc_ref = db.collection(u'User').document()
-            doc_ref.set({
-                u'NameUser': nomeUser,
-                u'Pass': passUser,
-                u'Email': email,
-                u'Key': key
-            })
-            ReadKeyUse(key)
-            messagebox.showinfo(title='success', message='Conta criada com sucesso')
+# def AddNewAccout(email, nomeUser, passUser, key):
+#     if VerifiInput(nomeUser, passUser, email, key):
+#         if VerifiKey(key,nomeUser):
+#             doc_ref = db.collection(u'User').document()
+#             doc_ref.set({
+#                 u'NameUser': nomeUser,
+#                 u'Pass': passUser,
+#                 u'Email': email,
+#                 u'Key': key
+#             })
+#             ReadKeyUse(key)
+#             messagebox.showinfo(title='success', message='Conta criada com sucesso')
 
 
 
@@ -201,7 +204,7 @@ def LayoutRegister():
     entry4.place(x=50, y=240)
 
     btn1 = customtkinter.CTkButton(master=frame, width=220, text='Register', corner_radius=6,
-                                   command=lambda: AddNewAccout(entry1.get(), entry2.get(), entry3.get(), entry4.get()))
+                                   command=lambda: adicionarNovaConta.AddNewAccout(entry1.get(), entry2.get(), entry3.get(), entry4.get()))
     btn1.place(x=50, y=300)
 
     app2.mainloop()
