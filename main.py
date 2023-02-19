@@ -13,6 +13,7 @@ from customtkinter import CTkEntry
 from firebase_admin import credentials
 from firebase_admin import firestore
 from datetime import datetime
+from datetime import date
 
 cred = credentials.Certificate(r"C:\Users\JoaoP\Downloads\gerador-pass-firebase-adminsdk-jq5tz-e946967ec9.json")
 
@@ -45,44 +46,78 @@ def VerifiUser(nomeUser, key):
 def ADDNewKey():
     key = secrets.token_hex(64)
     now = datetime.now()
-    dia = now.strftime('%d/%m/%Y')
+    dia = now.strftime('%d-%m-%Y')
 
     doc_ref = db.collection(u'Keys').document()
     doc_ref.set({
         u'Key': key,
         u'Day': dia,
-        u'DayFinish': "12/02/3023",  # isto tem que ser mudado tem que ser feito uma verificacao antes
+        u'DayFinish': "12-02-3023",  # isto tem que ser mudado tem que ser feito uma verificacao antes
         u'Duracao': u'lifetime',
         u'Usada': False
     })
 
 
+# Trazer dados especificos da key
+def VerifiInformationDay(dayFinish, key):
+    users_ref = db.collection(u"Keys")
+    docs = users_ref.stream()
+    for doc in docs:
+        keyFireBase = doc.to_dict()['Key']
+        if key == keyFireBase:
+            dayFinish = doc.to_dict()['DayFinish']
+            teste=datetime.strptime(dayFinish, "%d-%m-%Y").date()
+            return teste
+
+
+def VerifiInformationUse(key):
+    users_ref = db.collection(u"Keys")
+    docs = users_ref.stream()
+    for doc in docs:
+        keyFireBase = doc.to_dict()['Key']
+        if key == keyFireBase:
+            use = doc.to_dict()['Usada']
+            return use
+
+def VerifiInformationKey(key):
+    exist=False
+    users_ref = db.collection(u"Keys")
+    docs = users_ref.stream()
+    for doc in docs:
+        keyFireBase = doc.to_dict()['Key']
+        if keyFireBase == key:
+            #se entrar aqui e porque existe
+            exist=True
+            break
+        else:
+            #se entrar aqui e pq nao e igual
+            exist=False
+
+
+    if exist:
+        return False
+    else:
+        return True
+
+
 def VerifiKey(key):
-    door=False
+    dayFinish = ""
     users_ref = db.collection(u"Keys")
     docs = users_ref.stream()
     now = datetime.now()
-    day = now.strftime('%d/%m/%Y')
+    day = now.date()
     ####Contar documentos####
     collection_ref = db.collection(u'Keys')
-    # conta o número de documentos na coleção
     docss = collection_ref.get()
     num_docs = len(docss)
-    i = 0
     for doc in docs:
-        i += 1
-        dayFinish = doc.to_dict()['DayFinish']
-        keyFireBase = doc.to_dict()['Key']
-        keyUse = doc.to_dict()['Usada']
-        if keyFireBase != key:
-            door=True
-            if i == num_docs:
-                messagebox.showerror(title='error', message='Key não existe')
+        if VerifiInformationKey(key):
+            messagebox.showerror(title='error', message='Key não existe')
             return False
-        elif day >= dayFinish:
+        elif day > VerifiInformationDay(dayFinish, key):
             messagebox.showerror(title='error', message='Key expirada')
             return False
-        elif keyUse:
+        elif VerifiInformationUse(key):
             messagebox.showerror(title='error', message='Key ja utilizada')
             return False
         else:
