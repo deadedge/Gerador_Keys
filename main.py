@@ -1,40 +1,35 @@
-import adicionarNovaConta
+import firebase_admin
+from firebase_admin import firestore
+import addNewAcout
 import loginCliente
 import datetime
 from tkinter import messagebox
-
 import customtkinter
-
 import tkinter
 import secrets
 import re
-
 import tkinter as tk
 from plyer import notification
 from google.cloud import firestore
-
-import firebase_admin
 from customtkinter import CTkEntry
-from firebase_admin import credentials
-from firebase_admin import firestore
 from datetime import datetime
 from datetime import date
 
-#cred = credentials.Certificate(r"C:\Users\JoaoP\Downloads\gerador-pass-firebase-adminsdk-jq5tz-e946967ec9.json")
 
-#appFirebase = firebase_admin.initialize_app(cred)
 
-#db = firestore.client()
+# get the Firestore client
+
 app = customtkinter.CTk()
 
 
+# def VerifiEmail(email):
+#     pattern = r'^\S+@\S+\.\S+$'
+#     if re.match(pattern, email):
+#         return False
+#     else:
+#         return True
 
-def VerifiEmail(email):
-    pattern = r'^\S+@\S+\.\S+$'
-    if re.match(pattern, email):
-        return False
-    else:
-        return True
+
 # def VerifiUser(nomeUser):
 #     alreadyUserNameUsed = False
 #     users_ref = db.collection(u"User")
@@ -174,25 +169,39 @@ def VerifiEmail(email):
 #             })
 #             ReadKeyUse(key)
 #             messagebox.showinfo(title='success', message='Conta criada com sucesso')
+def LoginConfirm():
+    loginCliente.VerifiInformation()
+def center_window(root, width=300, height=200):
+    # Get screen width and height
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
 
+    # Calculate x and y coordinates for the Tk root window
+    x = int((screen_width/2) - (width/2))
+    y = int((screen_height/2) - (height/2))
 
-
-
+    # Set the dimensions and position of the window
+    root.geometry(f"{width}x{height}+{x}+{y}")
 # pagina de registro
 def LayoutRegister():
-    app.destroy()
+
+    app.withdraw()
     app2 = customtkinter.CTk()
-    app2.geometry("600x400")
+    center_window(app2, 600, 400)
     app2.title('Register')
+    app2.resizable(False, False)
+    app2.iconbitmap('C:/Users/JoaoP/Downloads/Arvore.ico')
+
+
 
     frame = customtkinter.CTkFrame(app2, width=320, height=360, corner_radius=15)
     frame.place(relx=0.5, rely=0.5, anchor=tkinter.CENTER)
 
     l1 = customtkinter.CTkLabel(master=frame, text="Register", font=('Century Gothic', 20))
-    l1.place(x=138, y=45)
+    l1.place(x=125, y=45)
 
     entry1 = customtkinter.CTkEntry(master=frame, width=220, placeholder_text="Email")
-    entry1.place(x=50, y=105)  # tenho que muda ro valor para aparecer
+    entry1.place(x=50, y=105)
 
     entry2 = customtkinter.CTkEntry(master=frame, width=220, placeholder_text="Username")
     entry2.place(x=50, y=150)
@@ -204,7 +213,8 @@ def LayoutRegister():
     entry4.place(x=50, y=240)
 
     btn1 = customtkinter.CTkButton(master=frame, width=220, text='Register', corner_radius=6,
-                                   command=lambda: adicionarNovaConta.AddNewAccout(entry1.get(), entry2.get(), entry3.get(), entry4.get()))
+                                   command=lambda: addNewAcout.AddNewAccout(entry1.get(), entry2.get(), entry3.get(),
+                                                                            entry4.get(),app2,app))
     btn1.place(x=50, y=300)
 
     app2.mainloop()
@@ -215,35 +225,34 @@ def LayoutLogin():
     customtkinter.set_appearance_mode("dark")
     customtkinter.set_default_color_theme("blue")
 
-    app.geometry("600x400")
+    center_window(app, 600, 400)
     app.title('Login')
-    #app.wm_overrideredirect(True)
+    # app.wm_overrideredirect(True)
+    # app.attributes('-toolwindow', True)
     app.iconbitmap('C:/Users/JoaoP/Downloads/Arvore.ico')
     app.resizable(False, False)
-   # app.attributes('-toolwindow', True)
 
     frame = customtkinter.CTkFrame(app, width=320, height=360, corner_radius=15)
     frame.place(relx=0.5, rely=0.5, anchor=tkinter.CENTER)
 
-
     l1 = customtkinter.CTkLabel(master=frame, text="Login", font=('Century Gothic', 20))
-    l1.place(x=138, y=45)
+    l1.place(x=138, y=65)
 
     entry1: CTkEntry = customtkinter.CTkEntry(master=frame, width=220, placeholder_text="Username")
-    entry1.place(x=50, y=110)
+    entry1.place(x=50, y=140)
 
     entry2 = customtkinter.CTkEntry(master=frame, width=220, placeholder_text="Password", show="*")
-    entry2.place(x=50, y=165)
+    entry2.place(x=50, y=180)
 
     button1 = customtkinter.CTkButton(master=frame, width=220, text='login', corner_radius=6,
+                                      command=lambda: loginCliente.VerifiInformation(entry1.get(),entry2.get(),app))
+    button1.place(x=50, y=220)
+
+    button2 = customtkinter.CTkButton(master=frame, width=100, text='Registrar', corner_radius=6,
                                       command=lambda: LayoutRegister())
-    button1.place(x=50, y=240)
+    button2.place(x=109, y=255)
 
     app.mainloop()
-
-
-
-
 
 
 LayoutLogin()
