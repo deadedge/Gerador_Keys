@@ -14,6 +14,7 @@ from google.cloud import firestore
 from customtkinter import CTkEntry
 from datetime import datetime
 from datetime import date
+import mainWindow
 
 
 
@@ -90,7 +91,6 @@ def LayoutLogin():
 
     entry1: CTkEntry = customtkinter.CTkEntry(master=frame, width=220, placeholder_text="Username")
     entry1.place(x=50, y=140)
-    entry1.focus()
 
     entry2 = customtkinter.CTkEntry(master=frame, width=220, placeholder_text="Password", show="*")
     entry2.place(x=50, y=180)
